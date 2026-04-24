@@ -1,13 +1,27 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "dashboard/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "output/*.csv",
+      "use": "@vercel/static"
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
       "destination": "/dashboard/index.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/$1"
+      "source": "/output/(.*)",
+      "destination": "/output/$1"
+    },
+    {
+      "source": "/dashboard/(.*)",
+      "destination": "/dashboard/$1"
     }
   ]
 }
