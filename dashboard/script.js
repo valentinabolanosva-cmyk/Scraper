@@ -42,7 +42,7 @@ function switchTab(tabId) {
 let commentsData = [];
 const CSV_COMMENTS = '../output/comments_analizados.csv';
 const CSV_POSTS = '../output/posts_summary.csv';
-const API_BASE = 'http://localhost:8001';
+const API_BASE = '/api';
 
 let sentimentChart = null;
 let postsChart = null;
