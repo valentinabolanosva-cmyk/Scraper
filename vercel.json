@@ -6,7 +6,7 @@
       "use": "@vercel/static"
     },
     {
-      "src": "output/*.csv",
+      "src": "output/**",
       "use": "@vercel/static"
     },
     {
