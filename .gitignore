@@ -9,7 +9,7 @@ venv/
 .env
 
 # Scraping / Data
-output/
+output/*
 !output/*.csv
 scratch/
 *.log
