@@ -1,0 +1,12 @@
+playwright
+pandas
+fake-useragent
+python-dotenv
+requests
+colorama
+tqdm
+fastapi
+uvicorn
+supabase
+httpx
+openai

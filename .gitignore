@@ -1,0 +1,22 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Scraping / Data
+output/
+scratch/
+*.log
+
+# Dashboard / Report
+reporte_sentimientos.html
+
+# IDEs
+.claude/
+.vscode/
+.idea/
