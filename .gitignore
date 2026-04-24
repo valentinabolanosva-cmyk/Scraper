@@ -10,6 +10,7 @@ venv/
 
 # Scraping / Data
 output/
+!output/*.csv
 scratch/
 *.log
 
