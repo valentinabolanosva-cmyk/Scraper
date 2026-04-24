@@ -78,46 +78,54 @@ def subir_datos() -> int:
     supabase: Client = create_client(URL, KEY)
     errores = 0
 
-    # 1. POSTS
+    # 1. VIDEOS (Antes 'posts')
     posts_csv = _posts_summary_path()
     print(f"\n[1] Leyendo {posts_csv}...")
     if os.path.exists(posts_csv):
         df_posts = pd.read_csv(posts_csv, encoding="utf-8-sig")
+        # Mapeo de nombres de columnas para que coincidan con tu tabla 'videos'
+        df_posts = df_posts.rename(columns={
+            'post_url': 'url',
+            'post_text': 'titulo',
+            'total_likes': 'likes',
+            'total_comments': 'comentarios',
+            'total_shares': 'compartidos',
+            'post_date': 'fecha_publicacion'
+        })
         registros = _clean_records(df_posts)
         if registros:
-            print(f" -> Subiendo {len(registros)} posts a 'posts'...")
+            print(f" -> Subiendo {len(registros)} registros a la tabla 'videos'...")
             try:
-                _upsert_en_lotes(supabase, "posts", registros, on_conflict="post_url")
+                _upsert_en_lotes(supabase, "videos", registros, on_conflict="url")
                 print(" -> OK")
             except Exception as e:
-                print(f" -> [!] Error subiendo posts: {e}")
+                print(f" -> [!] Error subiendo a 'videos': {e}")
                 errores += 1
-        else:
-            print(" -> CSV vacío, nada que subir.")
-    else:
-        print(" -> [!] No existe; salta este paso.")
 
-    # 2. COMMENTS
+    # 2. COMENTARIOS (Antes 'comments')
     comm_csv = _comments_path()
     print(f"\n[2] Leyendo {comm_csv}...")
     if os.path.exists(comm_csv):
         df_comm = pd.read_csv(comm_csv, encoding="utf-8-sig")
+        # Mapeo para tu tabla 'comentarios'
+        df_comm = df_comm.rename(columns={
+            'post_url': 'video_url',
+            'comment_text': 'comentario',
+            'commenter_name': 'usuario',
+            'comment_likes': 'likes',
+            'comment_date': 'fecha',
+            'sentimiento': 'sentimiento'
+        })
         registros = _clean_records(df_comm)
         if registros:
-            print(f" -> Subiendo {len(registros)} comentarios a 'comments'...")
+            print(f" -> Subiendo {len(registros)} registros a la tabla 'comentarios'...")
             try:
-                _upsert_en_lotes(
-                    supabase, "comments", registros,
-                    on_conflict="post_url,comment_order",
-                )
+                # Usamos video_url y comentario como conflicto para evitar duplicados
+                _upsert_en_lotes(supabase, "comentarios", registros, on_conflict="video_url,comentario")
                 print(" -> OK")
             except Exception as e:
-                print(f" -> [!] Error subiendo comentarios: {e}")
+                print(f" -> [!] Error subiendo a 'comentarios': {e}")
                 errores += 1
-        else:
-            print(" -> CSV vacío, nada que subir.")
-    else:
-        print(" -> [!] No existe; salta este paso.")
 
     print("\n" + "=" * 55)
     if errores == 0:

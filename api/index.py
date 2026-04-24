@@ -62,11 +62,10 @@ async def analizar_comentario(req: ComentarioRequest):
         supabase = get_supabase()
         if supabase:
             try:
-                supabase.table("analisis_comentarios").insert({
-                    "comentario_original": req.texto,
-                    "calificacion_temperatura": res["temperatura"],
-                    "tipo_humor": res["tipo_humor"],
-                    "justificacion": res["justificacion"],
+                supabase.table("comentarios").insert({
+                    "comentario": req.texto,
+                    "sentimiento": analisis["categoria"],
+                    # Si tienes columnas para temperatura o tipo_humor, puedes añadirlas aquí
                 }).execute()
             except:
                 pass
@@ -87,10 +86,10 @@ async def update_comment(req: UpdateCommentRequest):
         return {"status": "noop", "message": "Supabase no configurado, no se puede actualizar en la nube."}
     
     try:
-        # Nota: Aquí asumo que tienes una columna 'comment_text' y 'sentimiento' en Supabase
-        supabase.table("analisis_comentarios").update({
-            "sentimiento_manual": req.sentiment
-        }).eq("comentario_original", req.text).execute()
+        # Actualizar el sentimiento en la tabla 'comentarios'
+        supabase.table("comentarios").update({
+            "sentimiento": req.sentiment
+        }).eq("comentario", req.text).execute()
         
         return {"status": "success", "message": f"Actualizado en Supabase: {req.sentiment}"}
     except Exception as e:
